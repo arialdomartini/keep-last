@@ -14,6 +14,11 @@ class Usage(Exception):
         self.msg = msg
 
 
+class Keeper():
+    def load(self, directory):
+        self.files = [ f for f in listdir(directory) if isfile(join(directory,f)) ]
+
+
 def main(argv=None):
 
     if argv is None:
@@ -37,7 +42,9 @@ def main(argv=None):
         if not os.path.isdir(directory):
             raise Usage("directory %s cannot be found" % directory)
 
-        print [ f for f in listdir(directory) if isfile(join(directory,f)) ]
+        keeper = Keeper()
+        keeper.load(directory)
+        print keeper.files
 
     except Usage, err:
         print >>sys.stderr, err.msg
