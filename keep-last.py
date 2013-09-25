@@ -32,13 +32,12 @@ class Keeper():
         return {'filename' : filename, 'old_revs': sorted([ f for f in self.files if self.is_a_rev_of(f, filename) ])[:-3]}
 
 
-class FakePurger():
-    def purge(self, item):
-        print item
 
-class RealPurger():
-    def purge(self, item):
-        os.remove(item)
+def fake_purge(self, item):
+    print item
+
+def real_purge(self, item):
+    os.remove(item)
 
 
 def main(argv=None):
@@ -52,7 +51,7 @@ def main(argv=None):
         except getopt.error, msg:
             raise Usage(msg)
 
-        purger = RealPurger()
+        purger = real_purge
 
         for o, a in opts:
             if o in ("-h", "--help"):
@@ -61,7 +60,7 @@ def main(argv=None):
             elif o in ("--directory"):
                 directory = a
             elif o in ("--show-only"):
-                purger = FakePurger()
+                purger = fake_purge
 
         if not "directory" in locals():
             raise Usage("missing parameter --directory")
