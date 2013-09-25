@@ -66,7 +66,7 @@ def main(argv=None):
         for o, a in opts:
             if o in ("-h", "--help"):
                 raise Usage("""Usage:
-%s [--help]""" % os.path.basename(sys.argv[0]))
+%s [--help] --directory=<directory> [--show-only]""" % os.path.basename(sys.argv[0]))
             elif o in ("--directory"):
                 directory = a
             elif o in ("--show-only"):
