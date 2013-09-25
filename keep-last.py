@@ -2,6 +2,7 @@
 import sys
 import getopt
 import os
+import re
 from os import listdir
 from os.path import isfile, join
 
@@ -18,6 +19,11 @@ class Keeper():
     def load(self, directory):
         self.files = [ f for f in listdir(directory) if isfile(join(directory,f)) ]
 
+    def is_a_rev_file(self, filename):
+        return re.match(".*\.rev_.[0-9]{13}", filename)
+
+    def just_files(self):
+        return [ f for f in self.files if not self.is_a_rev_file(f) ]
 
 def main(argv=None):
 
@@ -44,7 +50,7 @@ def main(argv=None):
 
         keeper = Keeper()
         keeper.load(directory)
-        print keeper.files
+        print keeper.just_files()
 
     except Usage, err:
         print >>sys.stderr, err.msg
