@@ -32,6 +32,24 @@ class Keeper():
         return {'filename' : filename, 'old_revs': sorted([ f for f in self.files if self.is_a_rev_of(f, filename) ])[:-3]}
 
 
+class FakePurger():
+    def dont_purge(self, item):
+        print 'Nothing to purge for file "%s"' % item['filename']
+
+    def purge(self, item):
+        print 'There are revs that can be purged for file "%s"' % item['filename']
+        for old_rev in item['old_revs']:
+            print '  you could purge the file "%s"' % old_rev
+
+class RealPurger():
+    def dont_purge(self, item):
+        pass
+
+    def purge(self, item):
+        for old_rev in item['old_revs']:
+            print 'os.remove(%s)' % old_rev
+
+
 def main(argv=None):
 
     if argv is None:
@@ -39,9 +57,11 @@ def main(argv=None):
   
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "h", ["help", "directory="])
+            opts, args = getopt.getopt(argv[1:], "h", ["help", "directory=", "show-only"])
         except getopt.error, msg:
             raise Usage(msg)
+
+        purger = RealPurger()
 
         for o, a in opts:
             if o in ("-h", "--help"):
@@ -49,6 +69,8 @@ def main(argv=None):
 %s [--help]""" % os.path.basename(sys.argv[0]))
             elif o in ("--directory"):
                 directory = a
+            elif o in ("--show-only"):
+                purger = FakePurger()
 
         if not "directory" in locals():
             raise Usage("missing parameter --directory")
@@ -60,11 +82,10 @@ def main(argv=None):
         for item in keeper.get_files():
 
             if len(item['old_revs']) == 0:
-                print 'Nothing to purge for file "%s"' % item['filename']
+                purger.dont_purge(item)
             else:
-                print 'There are revs that can be purged for file "%s"' % item['filename']
-                for old_rev in item['old_revs']:
-                    print '  you could purge the file "%s"' % old_rev
+                purger.purge(item)
+
     except Usage, err:
         print >>sys.stderr, err.msg
         print >>sys.stderr, "for help use --help"
