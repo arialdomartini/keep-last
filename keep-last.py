@@ -19,7 +19,7 @@ def main(argv=None):
   
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "h", ["help"])
+            opts, args = getopt.getopt(argv[1:], "h", ["help", "directory="])
         except getopt.error, msg:
             raise Usage(msg)
 
@@ -27,7 +27,11 @@ def main(argv=None):
             if o in ("-h", "--help"):
                 raise Usage("""Usage:
 %s [--help]""" % os.path.basename(sys.argv[0]))
+            elif o in ("--directory"):
+                directory = a
 
+        if not "directory" in locals():
+            raise Usage("missing parameter --directory")
     except Usage, err:
         print >>sys.stderr, err.msg
         print >>sys.stderr, "for help use --help"
