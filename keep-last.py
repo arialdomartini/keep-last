@@ -60,7 +60,7 @@ def main(argv=None):
         for item in keeper.get_files():
 
             if len(item['old_revs']) == 0:
-                print 'Nothing to purge for  "%s"' % item['filename']
+                print 'Nothing to purge for file "%s"' % item['filename']
             else:
                 print 'There are revs that can be purged for file "%s"' % item['filename']
                 for old_rev in item['old_revs']:
