@@ -33,21 +33,12 @@ class Keeper():
 
 
 class FakePurger():
-    def dont_purge(self, item):
-        print 'Nothing to purge for file "%s"' % item['filename']
-
     def purge(self, item):
-        print 'There are revs that can be purged for file "%s"' % item['filename']
-        for old_rev in item['old_revs']:
-            print '  you could purge the file "%s"' % old_rev
+        print item
 
 class RealPurger():
-    def dont_purge(self, item):
-        pass
-
     def purge(self, item):
-        for old_rev in item['old_revs']:
-            print 'os.remove(%s)' % old_rev
+        os.remove(item)
 
 
 def main(argv=None):
@@ -80,11 +71,8 @@ def main(argv=None):
         keeper = Keeper()
         keeper.load(directory)
         for item in keeper.get_files():
-
-            if len(item['old_revs']) == 0:
-                purger.dont_purge(item)
-            else:
-                purger.purge(item)
+            for rev in item['old_revs']:
+                purger.purge(os.path.join(directory, rev))
 
     except Usage, err:
         print >>sys.stderr, err.msg
