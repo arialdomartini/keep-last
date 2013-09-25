@@ -29,7 +29,7 @@ class Keeper():
         return rev_candidate.find(filename) == 0 and self.is_a_rev_file(rev_candidate)
 
     def group_with_oldest_revs(self, filename):
-        return {filename : sorted([ f for f in self.files if self.is_a_rev_of(f, filename) ])[:-3]}
+        return {'filename' : filename, 'old_revs': sorted([ f for f in self.files if self.is_a_rev_of(f, filename) ])[:-3]}
 
 
 def main(argv=None):
@@ -57,8 +57,14 @@ def main(argv=None):
 
         keeper = Keeper()
         keeper.load(directory)
-        print keeper.get_files()
+        for item in keeper.get_files():
 
+            if len(item['old_revs']) == 0:
+                print 'Nothing to purge for  "%s"' % item['filename']
+            else:
+                print 'There are revs that can be purged for file "%s"' % item['filename']
+                for old_rev in item['old_revs']:
+                    print '  you could purge the file "%s"' % old_rev
     except Usage, err:
         print >>sys.stderr, err.msg
         print >>sys.stderr, "for help use --help"
