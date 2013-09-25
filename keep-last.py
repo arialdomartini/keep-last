@@ -32,6 +32,9 @@ def main(argv=None):
 
         if not "directory" in locals():
             raise Usage("missing parameter --directory")
+        if not os.path.isdir(directory):
+            raise Usage("directory %s cannot be found" % directory)
+
     except Usage, err:
         print >>sys.stderr, err.msg
         print >>sys.stderr, "for help use --help"
