@@ -23,7 +23,14 @@ class Keeper():
         return re.match(".*\.rev_.[0-9]{13}", filename)
 
     def just_files(self):
-        return [ f for f in self.files if not self.is_a_rev_file(f) ]
+        return [ self.group_with_revs(f) for f in self.files if not self.is_a_rev_file(f) ]
+
+    def is_a_rev_of(self, rev_candidate, filename):
+        return rev_candidate.find(filename) == 0 and self.is_a_rev_file(rev_candidate)
+
+    def group_with_revs(self, filename):
+        return {filename : [ f for f in self.files if self.is_a_rev_of(f, filename) ]}
+
 
 def main(argv=None):
 
