@@ -2,6 +2,8 @@
 import sys
 import getopt
 import os
+from os import listdir
+from os.path import isfile, join
 
 class RunException(Exception):
     def __init__(self, msg):
@@ -34,6 +36,8 @@ def main(argv=None):
             raise Usage("missing parameter --directory")
         if not os.path.isdir(directory):
             raise Usage("directory %s cannot be found" % directory)
+
+        print [ f for f in listdir(directory) if isfile(join(directory,f)) ]
 
     except Usage, err:
         print >>sys.stderr, err.msg
