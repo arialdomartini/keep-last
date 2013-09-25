@@ -29,7 +29,7 @@ class Keeper():
         return rev_candidate.find(filename) == 0 and self.is_a_rev_file(rev_candidate)
 
     def group_with_revs(self, filename):
-        return {filename : [ f for f in self.files if self.is_a_rev_of(f, filename) ]}
+        return {filename : sorted([ f for f in self.files if self.is_a_rev_of(f, filename) ])}
 
 
 def main(argv=None):
