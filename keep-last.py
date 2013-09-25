@@ -22,14 +22,14 @@ class Keeper():
     def is_a_rev_file(self, filename):
         return re.match(".*\.rev_.[0-9]{13}", filename)
 
-    def just_files(self):
-        return [ self.group_with_revs(f) for f in self.files if not self.is_a_rev_file(f) ]
+    def get_files(self):
+        return [ self.group_with_oldest_revs(f) for f in self.files if not self.is_a_rev_file(f) ]
 
     def is_a_rev_of(self, rev_candidate, filename):
         return rev_candidate.find(filename) == 0 and self.is_a_rev_file(rev_candidate)
 
-    def group_with_revs(self, filename):
-        return {filename : sorted([ f for f in self.files if self.is_a_rev_of(f, filename) ])}
+    def group_with_oldest_revs(self, filename):
+        return {filename : sorted([ f for f in self.files if self.is_a_rev_of(f, filename) ])[:-3]}
 
 
 def main(argv=None):
@@ -57,7 +57,7 @@ def main(argv=None):
 
         keeper = Keeper()
         keeper.load(directory)
-        print keeper.just_files()
+        print keeper.get_files()
 
     except Usage, err:
         print >>sys.stderr, err.msg
