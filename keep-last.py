@@ -6,10 +6,6 @@ import re
 from os import listdir
 from os.path import isfile, join
 
-class RunException(Exception):
-    def __init__(self, msg):
-        self.msg = msg
-
 class Usage(Exception):
     def __init__(self, msg):
         self.msg = msg
