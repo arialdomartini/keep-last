@@ -16,7 +16,7 @@ class Keeper():
         self.files = [ f for f in listdir(directory) if isfile(join(directory,f)) ]
 
     def is_a_rev_file(self, filename):
-        return re.match(".*\.rev_.[0-9]{13}", filename)
+        return re.match(".*\.rev_.[0-9]{11}", filename)
 
     def get_files(self):
         return [ self.group_with_oldest_revs(f) for f in self.files if not self.is_a_rev_file(f) ]
@@ -29,10 +29,10 @@ class Keeper():
 
 
 
-def fake_purge(self, item):
+def fake_purge(item):
     print item
 
-def real_purge(self, item):
+def real_purge(item):
     os.remove(item)
 
 
@@ -67,7 +67,7 @@ def main(argv=None):
         keeper.load(directory)
         for item in keeper.get_files():
             for rev in item['old_revs']:
-                purger.purge(os.path.join(directory, rev))
+                purger(os.path.join(directory, rev))
 
     except Usage, err:
         print >>sys.stderr, err.msg
