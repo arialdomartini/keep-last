@@ -28,6 +28,13 @@ class Keeper():
         return {'filename' : filename, 'old_revs': sorted([ f for f in self.files if self.is_a_rev_of(f, filename) ])[:-3]}
 
 
+    def purge(self, directory, purger):
+        self.load(directory)
+        for item in self.get_files():
+            for rev in item['old_revs']:
+                purger(os.path.join(directory, rev))
+
+
 
 def fake_purge(item):
     print "  %s" % item
@@ -64,11 +71,10 @@ def main(argv=None):
         if not os.path.isdir(directory):
             raise Usage("directory %s cannot be found" % directory)
 
+
+        
         keeper = Keeper()
-        keeper.load(directory)
-        for item in keeper.get_files():
-            for rev in item['old_revs']:
-                purger(os.path.join(directory, rev))
+        keeper.purge(directory, purger)
 
 
         matches = []
@@ -76,11 +82,7 @@ def main(argv=None):
             for filename in dirnames:
                 subdir = os.path.join(root, filename) 
                 print "scanning directory %s" % subdir
-
-                keeper.load(subdir)
-                for item in keeper.get_files():
-                    for rev in item['old_revs']:
-                        purger(os.path.join(directory, rev))
+                keeper.purge(subdir, purger)
 
     except Usage, err:
         print >>sys.stderr, err.msg
