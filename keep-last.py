@@ -37,10 +37,10 @@ class Keeper():
 
 
 def fake_purge(item):
-    print "  %s" % item
+    print "%s" % item
 
 def real_purge(item):
-    print "  %s" % item
+    print "%s" % item
     os.remove(item)
 
 
@@ -81,7 +81,6 @@ def main(argv=None):
         for root, dirnames, filenames in os.walk(directory):
             for filename in dirnames:
                 subdir = os.path.join(root, filename) 
-                print "scanning directory %s" % subdir
                 keeper.purge(subdir, purger)
 
     except Usage, err:
